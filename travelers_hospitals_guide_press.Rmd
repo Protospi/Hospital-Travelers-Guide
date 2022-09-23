@@ -10,41 +10,44 @@ output:
 
 ## Overview
 
-* This is an R Markdown presentation that explains the implementation and usability of __Hospital Travelers Guide__ application developed as a final project to the __Coursera Jonh Hopkins Pratical Data Science Course__.
+* __Hospital Travelers Guide__ is an application developed as a final project to the __Coursera John Hopkins Practical Data Science Specialization for the Data Products Course__.
 
-* I'm currently working on a chatbot company named __Guide121__ in Brazil as a data analysist. For one of our clients, a travel insurance company, we implemented a network model to classify travelers needs based on text inputs between __16__ categories and one of then is health inssurance.
+* I'm currently working on a chatbot company as a data analyst. One of our clients is a travel insurance company. We implemented a network model to classify travelers needs based on text inputs between many categories and one of them is health insurance.
 
-* The main purpose of the application is to guide the traveler to the __near hospitals__ based on the traveler location coordinates shared by __whatsapp__.
+* The main purpose of the application is to guide the traveler to the __near hospitals__ based on their location coordinate shared with the bot on the __whatsapp__ channel.
+
+* Repo: [GitHub](https://github.com/Protospi/Hospital-Travelers-Guide)
 
 ## Conversation Flow
 
-1. Travelers start to talk with the chatbot and write they're main reason to reach for insurance support.
-2. A __Neural Network__ model predicts that the user wants information about near hospitals.
+1. Travelers start to talk with the chatbot and write their main reason to reach for insurance support.
+2. A __Neural Network__ model predicts that the user wants information about nearby hospitals.
 3. The bot asks for user location.
-4. The application calculate distances from latitudes and logitudes agaist the hospitals database.
-5. A world map is rendered on a __html__ page with the __traveler__ and the __3__ hospitals markers with name and adresses of the hospitals and also __3__ lines with the distances in kilometers.
-6. A __url__ link is sent to the travelers on whatsapp so they can vizualize the map on a __browser__.
+4. The application calculates distances from latitudes and longitudes against the hospitals database.
+5. A world map is rendered on a __html__ page with the __traveler__ and the __3__ hospitals markers with name and addresses of the hospitals and also __3__ lines with the distances in kilometers.
+6. A __url__ link is sent to the travelers on whatsapp so they can visualize the map on a __browser__.
 
-## Data Scource
+## Data Source
 
-* The dataset was retrieved through the donwload of a file in `.csv` format on the website below.
+* The dataset was retrieved through the download of a file in `.csv` format on the website below.
 
 * [Geoplatform Opendata Arcgis](https://hifld-geoplatform.opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0/explore?location=36.946719%2C64.325615%2C4.00)
 
 * This feature class/shapefile contains Hospitals derived from various sources for the [Homeland Infrastructure Foundation-Level Data](https://gii.dhs.gov/HIFLD)
   
-* The data base contains __7.623__ hospitals with features like names, adresses, latitudes and longitudes. It's not even __10%__ of the total hospitals in the world but the data is free and this project is just a prototype for a _minimum viable product_ that will go onto production if it's approved by stakeholders.
+* The database contains __7.623__ hospitals with features like names, addresses, latitudes and longitudes. It's not even __10%__ of the total hospitals in the world but the data is free and this project is just a prototype for a _minimum viable product_ that will go onto production if it's approved by stakeholders.
 
 ## Algorithm
 
-1. Load the hospitals data base, filter for _name_, _address_, _latitude_ and _longitude_.
-2. Bind the rows with traveler coordinates data.
-3. Calculate the euclidian distance between coordinates of the traveler and hospitals, arrange by distance and slice first __3__.
-4. Tranform the coordinate to the projection __+init=epsg:4326__ and calculate the distance in kilometers.
-5. Draw the leafleat map plot in html web shiny reactive enviroment with the fllowing elements:
-6. Overlay markers for the traveler and __3__ nears hospital with hoover tooltip containing the name and address of the hospitals. Lines between the traveler and the __3__ hospitals with hoover tooltip showing the distance in kilometers. 
+1. Load the hospitals database, filter for _name_, _address_, _latitude_ and _longitude_.
+2. Bind the rows with traveler coordinate data.
+3. Calculate the euclidean distance between coordinates of the traveler and hospitals, arrange by distance and slice first __3__.
+4. Transform the coordinate to the projection __+init=epsg:4326__ and calculate the distance in kilometers.
+5. Draw the leaflet map plot in html web shiny reactive environment with the following elements:
+6. Overlay markers for the traveler and __3__ nears hospital with hover tooltip containing the name and address of the hospitals. Lines between the traveler and the __3__ hospitals with hover tooltip showing the distance in kilometers. 
 
 ## Demo
+
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -141,5 +144,3 @@ leaflet::renderLeaflet({
 })
 
 ```
-
-
