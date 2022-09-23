@@ -1,0 +1,114 @@
+---
+title: "Travelers Hospitals Guide"
+author: "Pedro Loes"
+date: "2022-09-21"
+output: html_document
+runtime: shiny
+---
+
+#### Coordinates Input Panel
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+
+# Load libraries
+library(leaflet)
+library(shiny)
+library(sf)
+library(maptools)
+library(dplyr)
+library(tidyverse)
+library(htmltools)
+
+# Read data from hospitals
+hospitals <- read_csv("final_project.csv") %>% 
+  mutate(NAME = paste(NAME, ADDRESS, sep = "<br>")) %>% 
+  select(NAME, LATITUDE, LONGITUDE)
+
+# Define row
+inputPanel(
+
+# Define inputs
+numericInput("lat",
+             label = "Latitude",
+             value = 38.897957,
+             min = -90,
+             max = 90),
+
+numericInput("long",
+             label = "Longitude",
+             value = -77.036560,
+             min = -180,
+             max = 180)
+)
+
+```
+
+#### World Map
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+
+# Define função para calculo da distancia euclidiana
+dist_euc <- function(vect1, vect2) sqrt(sum((vect1 - vect2)^2))
+
+# Define hospital icons
+icons_hosp <- awesomeIcons(
+  icon = 'hospital-o',
+  lib = 'fa',
+  iconColor = "#FFFFFF",
+  markerColor = "red")
+
+# Define user icons
+icons_user <- awesomeIcons(
+  icon = 'user',
+  lib = 'fa',
+  iconColor = "#FFFFFF",
+  markerColor = "black")
+  
+# Render Plot
+leaflet::renderLeaflet({
+  
+  # Define data frame
+  df <- data.frame(NAME = c("Traveler"),
+                   LATITUDE = input$lat,
+                   LONGITUDE = input$long) %>% 
+      bind_rows(hospitals) %>% 
+      rowwise() %>%
+      mutate(diff = dist_euc(c(input$lat, input$long),
+                             c(LATITUDE, LONGITUDE))) %>% 
+  arrange(diff) %>% 
+  as_tibble() %>% 
+  slice(1:4) 
+  
+  # Define df geo
+  df_geo <- df
+  
+  # Define traveler
+  df_tra <- data.frame(NAME = c("Traveler"),
+                   LATITUDE = input$lat,
+                   LONGITUDE = input$long)
+  
+  # Calculate Distances
+  coordinates(df_geo) <- c('LONGITUDE', 'LATITUDE')
+  proj4string(df_geo) <- CRS("+init=epsg:4326")
+  distance <- df_geo %>% st_as_sf() %>% st_distance 
+  dists <- round(as.numeric(distance[1,2:4]) / 1000,1)
+  
+  # LIst of labels
+  labs <- as.list(df[2:4,]$NAME)
+  user <- HTML(df[1,]$NAME)
+  
+  # Draw plot
+  leaflet(df[2:4,]) %>% 
+    addTiles() %>%
+    addAwesomeMarkers(~LONGITUDE, ~LATITUDE, label = lapply(labs, HTML), icon = icons_hosp) %>% 
+    addAwesomeMarkers(data = df_tra, ~LONGITUDE, ~LATITUDE, label = user, icon = icons_user) %>% 
+    addPolylines(data=df[c(1,2),], ~LONGITUDE, ~LATITUDE, label = paste0("Distance: ", dists[1], " km"))%>% 
+    addPolylines(data=df[c(1,3),], ~LONGITUDE, ~LATITUDE, label = paste0("Distance: ", dists[2], " km"))%>% 
+    addPolylines(data=df[c(1,4),], ~LONGITUDE, ~LATITUDE, label = paste0("Distance: ", dists[3], " km"))
+  
+})
+
+```
+
+* Data Source: [Geoplatform Opendata Arcgis](https://hifld-geoplatform.opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0/explore?location=36.946719%2C64.325615%2C4.00)
+
