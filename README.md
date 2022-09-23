@@ -1,6 +1,6 @@
 # Hospital-Travelers-Guide
 
-This project repo was created as a version control and file storage/share/collaborate. The main purpose of this project is the developement of an prototype application that will be presented as a data product for the stakeholders of a travel insurance company for approval. The purpose of the application is to guide traveler to the __near hospitals__ based on they're location coordinates.
+This project repo was created as a version control and file storage/share/collaborate platform. The main purpose of this project is the developement of a prototype application that will be presented as a data product for the stakeholders of a travel insurance company for approval. The purpose of the application is to guide traveler to the __near hospitals__ based on they're location coordinates.
 
 ***
 
